@@ -14,7 +14,7 @@ public class EmpService {
 	EmpRepository empRepository;
 	
 	public List<Employee> getAll(){
-		return (List<Employee>) empRepository.findAll();
+		return empRepository.findAll();
 	}	
 	public Employee getOne(String id) {
 		return empRepository.findByEmpId(id);
@@ -26,6 +26,7 @@ public class EmpService {
 		}
 		return null;
 	}
+
 	
 	
 	

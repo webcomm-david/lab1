@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<table class="table_result">
+					<tr>
+						<td colspan="13">
+							<a>查詢結果</a>
+							<button class="btn_deleteChecked" type="button">刪除勾選</button>
+							<hr>
+						</td>
+					</tr>
+					<tr>
+						<th><input class="selectAll" type="checkbox"></th>
+						<th>項次</th>
+						<th>工作編號</th>
+						<th>類別</th>
+						<th>列管層級</th>
+						<th>主管單位</th>
+						<th>主管單位承辦人</th>
+						<th>承辦單位</th>
+						<th>承辦單位承辦人</th>
+						<th>辦理起日</th>
+						<th>辦理迄日</th>
+						<th>工作項目</th>
+						<th>功能</th>
+					</tr>
+					<tr>
+						<td><input class="selectOne" type="checkbox"></td>
+						<td>1</td>
+						<td class="caseId">20140101001</td>
+						<td>臨時列管</td>
+						<td>科室列管</td>
+						<td>政府服務處(GOV01)</td>
+						<td>政府服務處-陳小春(00001)</td>
+						<td>工程服務處</td>
+						<td>工程服務處-蔡仲和(00003)</td>
+						<td>108/03/12</td>
+						<td>108/03/12</td>
+						<td>喝咖啡</td>
+						<td><button class="btn_goUpdatePage" type="button">修改</button></td>
+					</tr>
+					<tr th:each="case,caseIter : ${allCase}">
+						<td><input class="selectOne" type="checkbox"></td>
+						<td th:text="${caseIter.count}"></td>
+						<td th:text="${case.CaseNo}"></td>
+						<td th:text="${case.Type.Type}"></td>
+						<td th:text="${case.MonitorLevel.MonitorLevel}"></td>
+						<td th:text="${case.ManagerEmp.Unit.Name} + ${case.ManagerEmp.Unit.UnitId}"></td>
+						<td th:text="${case.ManagerEmp.Name} + ${case.ManagerEmp.EmpId}"></td>
+						<td th:text="${case.ContactEmp.Unit.Name} + ${case.ManagerEmp.Unit.UnitId}"></td>
+						<td th:text="${case.ContactEmp.Name} + ${case.ManagerEmp.EmpId}"></td>
+						<td th:text="${case.StartDate}"></td>
+						<td th:text="${case.EndDate}"></td>
+						<td th:text="${case.WorkItemDesc}"></td>
+					</tr>
+
+				</table>
+</body>
+</html>

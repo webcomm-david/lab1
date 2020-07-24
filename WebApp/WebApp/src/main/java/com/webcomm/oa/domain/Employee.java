@@ -7,7 +7,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "EMPLOYEE")
 public class Employee implements Serializable {
-	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5638867829801035993L;
+
 	@Id
 	@Column(name = "EMP_ID")
 	private String empId;

@@ -3,14 +3,619 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+* {
+	margin: 0;
+	padding: 0;
+	font-family: Microsoft JhengHei;
+}
+
+html, body {
+	height: 100%;
+}
+
+#container {
+	position: relative;
+	width: 100%;
+	min-height: 100%;
+	padding-bottom: 100px;
+	box-sizing: border-box;
+}
+
+header {
+	width: 100%;
+	height: 70px;
+/* 	background: #999; */
+}
+
+.main {
+	width: 100%;
+	
+}
+
+footer {
+	width: 100%;
+	height: 100px;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	background: #333;
+	color: white;
+}
+
+section{
+	margin-bottom: 50px;
+}
+
+img.child{
+  width: 500px;
+  margin: 10px 0px;
+}
+
+table.start{
+  position: relative;
+  margin: auto;
+  text-align: center;
+  width: 72%;
+  border-collapse:collapse
+}
+
+.start th, .start td {
+  border: #e0e0e0 1px solid;
+}
+
+.start th{
+  background-color: #f0f0f0;
+}
+
+h2{
+  text-align: center;
+  margin: 20px 0px;
+}
+
+div.searchConditionArea{	
+	background-color: #f7f7f7;
+}
+
+table.table_searchCondition{
+	position: relative;
+	margin: auto;
+	width: 72%;
+}
+
+/* .table_searchCondition tr, .table_searchCondition td, .table_searchCondition th{
+	border: 1px solid blue;
+} */
+
+.table_searchCondition td{
+	width: 40%;
+	padding: 10px;
+}
+
+select{
+	width: 100%;
+}
+
+h1{
+	text-align: left;
+}
+
+button{
+	width: 84px;
+    height: 32px;
+    margin: 6px;
+	border: none;
+	border-radius: 4px;
+	background-color: rgb(0, 119, 255);
+    color: white;
+}
+
+.buttonArea{
+	text-align: right;
+}
+
+table.table_result{
+	border-collapse: collapse;
+	position: relative;
+	margin: auto;
+	/* border: solid 1px blue; */
+	width: 72%;
+}
+
+.table_result th, .table_result td{
+	/* border: solid 1px blue;	 */
+	padding: 5px;
+}
+
+span.startDate, span.endDate{
+	display: none;
+}
+
+.btn_goBack{
+	background-color: rgb(126, 186, 255);
+}
+
+input[type=checkbox]{
+	width: 20px;
+	height: 20px;
+}
+
+.table_result tr:nth-of-type(even){
+	background-color: #f0f0f0;
+}
+
+textarea{
+	height: 160px;
+	width: 100%;
+	resize: none;
+}
+
+input{
+	width: 100%;
+}
+
+.insertView, .updateView{
+	display: none;
+}
+
+
+
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
-	<p th:text="${employee.Name}"></p>
-	<p th:text="${employee.EmpId}"></p>
-	<p th:text="${employee.Unit.Name}"></p>
+	<div id="container">
+		<header th:include="components/header :: header"></header>
+		<section>
+			<div class="firstView">
+				<h2>SpringBoot Thymeleaf Jpa Lab</h2>
+				<table class="start">
+					<tr>
+						<th>點擊圖片進入功能頁</th>
+					</tr>
+					<tr>
+						<td><img class="child" src="https://cdn.mindful.org/YesBrain.jpg?q=80&fm=jpg&fit=crop&w=1920&h=1080" alt=""></td>
+					</tr>
+				</table>
+			</div>
+		
+			<div class="searchConditionArea">
+				<form th:action="@{/index/search}" th:object="${caseReq}" method="post">
+					<table class="table_searchCondition">
+						<tr>
+							<th>
+								<h1>查詢條件</h1>
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<p>列管層級</p>
+								<select th:field="*{monitorLevel}" name="" class="controlLevel">
+									<option th:each="monitor: ${monitorMap}" th:value="${monitor.key}" th:text="${monitor.value}"></option>
+								</select>
+							</td>
+							<td>
+								<p>類別</p>
+								<select th:field="*{type}" name="" class="caseType">
+									<option th:each="type: ${typeMap}" th:value="${type.key}" th:text="${type.value}"></option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p>主管單位</p>
+								<select th:field="*{managerEmp.unit.unitId}" name="" class="managementUnit">
+									<option th:each="unit: ${unitList}" th:value="${unit.UnitId}" th:text="${unit.Name}"></option>
+								</select>
+							</td>
+							<td>
+								<p>承辦單位</p>
+								<select th:field="*{contactEmp.unit.unitId}" name="" class="organizer">
+									<option th:each="unit: ${unitList}" th:value="${unit.UnitId}" th:text="${unit.Name}">全部</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="buttonArea">
+								<button class="btn_goInsertPage" type="button">新增</button>
+								<button class="btn_search" type="button">查詢</button>
+								<button class="btn_exportFile" type="button">列印</button>
+							</td>
+						</tr>
+					</table>
+					<input type="submit" value="GOGO">
+				</form>
+			</div>
+
+			<div class="resultArea">
+				<table class="table_result">
+					<tr>
+						<td colspan="13">
+							<a>查詢結果</a>
+							<button class="btn_deleteChecked" type="button">刪除勾選</button>
+							<hr>
+						</td>
+					</tr>
+					<tr>
+						<th><input class="selectAll" type="checkbox"></th>
+						<th>項次</th>
+						<th>工作編號</th>
+						<th>類別</th>
+						<th>列管層級</th>
+						<th>主管單位</th>
+						<th>主管單位承辦人</th>
+						<th>承辦單位</th>
+						<th>承辦單位承辦人</th>
+						<th>辦理起日</th>
+						<th>辦理迄日</th>
+						<th>工作項目</th>
+						<th>功能</th>
+					</tr>
+					<tr th:each="case,caseIter : ${allCase}">
+						<td><input class="selectOne" type="checkbox"></td>
+						<td th:text="${caseIter.count}"></td>
+						<td th:text="${case.CaseNo}" class="caseId">20140101002</td>
+						<td th:text="${case.Type.Type}" class="caseType">臨時列管</td>
+						<td th:text="${case.MonitorLevel.MonitorLevel}" class="controlLevel">科室列管</td>
+						<td th:text="${case.ManagerEmp.Unit.Name} + ${case.ManagerEmp.Unit.UnitId}" class="managementUnit">政府服務處(GOV01)</td>
+						<td th:text="${case.ManagerEmp.Unit.Name} + '-' + ${case.ManagerEmp.Name} + ${case.ManagerEmp.EmpId}" class="empManagementUnit">政府服務處-陳小春(00001)</td>
+						<td th:text="${case.ContactEmp.Unit.Name} +  ${case.ManagerEmp.Unit.UnitId}" class="organizer">工程服務處</td>
+						<td th:text="${case.ContactEmp.Unit.Name} + '-' + ${case.ContactEmp.Name} + ${case.ManagerEmp.EmpId}" class="empOrganizer"></td>
+						<td><span th:text="${case.StartDate}" class="startDate"></span><span class="tw_startDate">108/03/12</span></td>
+						<td><span th:text="${case.EndDate}" class="endDate"></span><span class="tw_endDate">108/03/12</span></td>
+						<td th:text="${case.WorkItemDesc}" class="caseDescript">喝咖啡</td>
+						<td><button class="btn_goUpdatePage" type="button">修改</button></td>
+					</tr>
+					
+				</table>
+			</div>
+
+			<div class="insertView">
+				<table class="table_searchCondition">
+					<tr>
+						<th>
+							<h1>新增畫面</h1>
+						</th>
+					</tr>
+					<tr>
+						<td>
+							<p>*工作編號</p>
+							<input class="caseId" type="text">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>*列管層級</p>
+							<select name="" class="controlLevel">
+								<option value="">報部列管</option>
+								<option value="">科室列管</option>
+								<option value="">局列管</option>
+								<option value="">不列管</option>
+							</select>
+						</td>
+						<td>
+							<p>*類別</p>
+							<select name="" class="caseType">
+								<option value="">總綱目</option>
+								<option value="">臨時列管</option>
+								<option value="">非列管(原A類案件)</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>*主管單位承辦人</p>
+							<select name="" class="empManagementUnit">
+								<option value="">某某某</option>
+							</select>
+						</td>
+						<td>
+							<p>*承辦單位承辦人</p>
+							<select name="" class="empOrganizer">
+								<option value="">某某某</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>*辦理起日</p>
+							<input class="startDate" type="text">
+						</td>
+						<td>
+							<p>*辦理迄日</p>
+							<input class="endDate" type="text">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<p>工作項目</p>
+							<textarea class="caseDescript"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="buttonArea">
+							<button class="btn_saveData" type="button">儲存</button>
+							<button class="btn_goBack" type="button">取消</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="updateView">
+				<table class="table_searchCondition">
+					<tr>
+						<th>
+							<h1>修改畫面</h1>
+						</th>
+					</tr>
+					<tr>
+						<td>
+							<p>工作編號</p>
+							<input class="caseId" type="text" disabled value="test123">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>*列管層級</p>
+							<select name="" class="controlLevel">
+								<option value="">報部列管</option>
+								<option value="">科室列管</option>
+								<option value="">局列管</option>
+								<option value="">不列管</option>
+							</select>
+						</td>
+						<td>
+							<p>*類別</p>
+							<select name="" class="caseType">
+								<option value="">總綱目</option>
+								<option value="">臨時列管</option>
+								<option value="">非列管(原A類案件)</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>*主管單位承辦人</p>
+							<select name="" class="empManagementUnit">
+								<option value="">某某某</option>
+							</select>
+						</td>
+						<td>
+							<p>*承辦單位承辦人</p>
+							<select name="" class="empOrganizer">
+								<option value="">某某某</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>*辦理起日</p>
+							<input class="startDate" type="text">
+						</td>
+						<td>
+							<p>*辦理迄日</p>
+							<input class="endDate" type="text">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<p>工作項目</p>
+							<textarea class="caseDescript"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="buttonArea">
+							<button class="btn_saveData" type="button">儲存</button>
+							<button class="btn_goBack" type="button">取消</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</section>
+		<footer th:include="components/footer :: footer"></footer>
+	</div>
+
+
+<!-- 	<a th:href="@{/index?id=FDC1101}">員工A</a> -->
+<!-- 	<p th:text="${employee2?.Name} + 'requestParam'"></p> -->
+<!-- 	<a th:href="@{/index/FDC2101}">員工B</a> -->
+<!-- 	<p th:text="${employee3?.Name} + 'pathVariable'"></p> -->
+	<a th:href="@{/getAllCase}">查詢全部Case</a>
+<!-- 	<form th:action="@{/index/search}" th:object="${caseReq}" method="post"> -->
+<!-- 		<select th:field="*{monitorLevel}"> -->
+<!-- 			<option th:each="monitor: ${monitorMap}" th:value="${monitor.key}" th:text="${monitor.value}"></option> -->
+<!-- 		</select> -->
+<!-- 		<select th:field="*{type}"> -->
+<!-- 			<option th:each="type: ${typeMap}" th:value="${type.key}" th:text="${type.value}"></option> -->
+<!-- 		</select> -->
+<!-- 		<select th:field="*{managerEmp.unit.unitId}"> -->
+<!-- 			<option th:each="unit: ${unitList}" th:value="${unit.UnitId}" th:text="${unit.Name}"></option> -->
+<!-- 		</select> -->
+<!-- 		<select th:field="*{contactEmp.unit.unitId}"> -->
+<!-- 			<option th:each="unit: ${unitList}" th:value="${unit.UnitId}" th:text="${unit.Name}"></option> -->
+<!-- 		</select> -->
+<!-- 		<input type="submit" value="GOGO"> -->
+<!-- 	</form> -->
+	<button class="btn_sendAjax" type="button">sendAjax!</button>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script>
+		$(window).on("load", function(){
+			chageDateFmt();
+		});
 	
-	<p th:text="${employee1.Name}"></p>
-	<p th:text="${employee1.EmpId}"></p>
-	<p th:text="${employee1.Unit.Name}"></p>
+		$(document).on("change", function(){
+			reverseCheckbox();
+		});
+	
+		//西元轉民國 & 西元去掉時間保留日期
+		function chageDateFmt(){
+			$(".table_result").find(".startDate").each(function(){
+				let startDate = $(this).html().split(" ")[0];
+				let startDateArr = startDate.split("-");
+				startDateArr[0] = (parseInt(startDateArr[0])-1911).toString();
+				$(this).next(".tw_startDate").html(startDateArr.join("/"));
+				$(this).html(startDate);
+			});
+			$(".table_result").find(".endDate").each(function(){
+				let endDate = $(this).html().split(" ")[0];
+				let endDateArr = endDate.split("-");
+				endDateArr[0] = (parseInt(endDateArr[0])-1911).toString();
+				$(this).html(endDateArr.join("/"));
+				$(this).html(endDate);
+			});
+		}
+	
+		//單一checkbox連動全選
+		function reverseCheckbox(){
+			if($(".selectOne").length > 0){
+				if($(".selectOne").length == $(".selectOne:checked").length){
+					$(".selectAll").prop("checked", true);
+				}else{
+					$(".selectAll").prop("checked", false);
+				}
+			}else{
+				$(".selectAll").prop("checked", false);
+			}
+		}
+	
+		//撤換成搜尋頁面
+		$(document).on("click", ".child", function(){
+			$(".firstView").css("display", "none");
+			$(".searchConditionArea").css("display", "block");
+			$(".resultArea").css("display", "block");
+		});
+	
+		//checkbox全選/取消全選
+		$(document).on("click", ".selectAll", function(){
+			$(".selectOne").each(function(){
+				$(this).prop("checked", $(".selectAll").prop("checked"));
+			});
+		});
+	
+		//撤換成新增頁面
+		$(document).on("click", ".btn_goInsertPage", function(){
+			$(".searchConditionArea").css("display", "none");
+			$(".resultArea").css("display", "none");
+			$(".insertView").css("display", "block");
+		});
+	
+		//搜尋資料並顯示
+		$(document).on("click", ".btn_search", function(){
+			let controlLevel = $(this).closest("table").find(".controlLevel").find("option:selected").html();
+			let caseType = $(this).closest("table").find(".caseType").find("option:selected").html();
+			let managementUnit = $(this).closest("table").find(".managementUnit").find("option:selected").html();
+			let organizer = $(this).closest("table").find(".organizer").find("option:selected").html();
+			alert(controlLevel + caseType + managementUnit + organizer);
+			let val_controlLevel = $(this).closest("table").find(".controlLevel").find("option:selected").val();
+			let val_caseType = $(this).closest("table").find(".caseType").find("option:selected").val();
+			let val_managementUnit = $(this).closest("table").find(".managementUnit").find("option:selected").val();
+			let val_organizer = $(this).closest("table").find(".organizer").find("option:selected").val();
+			alert(val_controlLevel + val_caseType + val_managementUnit + val_organizer);
+		});
+	
+		//匯出資料
+		$(document).on("click", ".btn_exportFile", function(){
+			alert("匯出資料");
+		});
+	
+		//刪除onckecked的列表資料
+		$(document).on("click", ".btn_deleteChecked",function(){
+			if($(".selectOne:checked").length > 0){
+				let caseIdArr = [];
+				$(".selectOne:checked").each(function(index, item){
+					caseIdArr[index] = $(this).closest("tr").find(".caseId").html();
+				});
+				alert("要刪除的caseId: "+caseIdArr);
+			}
+		});
+	
+		//撤換成修改單筆資料的畫面
+		$(document).on("click", ".btn_goUpdatePage", function(){
+			let caseId = $(this).closest("tr").find(".caseId").html();
+			let caseType = $(this).closest("tr").find(".caseType").html();
+			let controlLevel = $(this).closest("tr").find(".controlLevel").html();
+			let managementUnit = $(this).closest("tr").find(".managementUnit").html();
+			let empManagementUnit = $(this).closest("tr").find(".empManagementUnit").html();
+			let organizer = $(this).closest("tr").find(".organizer").html();
+			let empOrganizer = $(this).closest("tr").find(".empOrganizer").html();
+			let startDate = $(this).closest("tr").find(".startDate").html();
+			let endDate = $(this).closest("tr").find(".endDate").html();
+			let caseDescript = $(this).closest("tr").find(".caseDescript").html();
+			//塞值到修改頁面
+			$(document).find(".updateView").find(".caseId").val(caseId);
+			// $(document).find(".updateView").find(".caseType").val(caseType);
+			// $(document).find(".updateView").find(".controlLevel").val(controlLevel);
+			// $(document).find(".updateView").find(".managementUnit").val(managementUnit);
+			// $(document).find(".updateView").find(".empManagementUnit").val(empManagementUnit);
+			// $(document).find(".updateView").find(".organizer").val(organizer);
+			// $(document).find(".updateView").find(".empOrganizer").val(empOrganizer);
+			$(document).find(".updateView").find(".startDate").val(startDate);
+			$(document).find(".updateView").find(".endDate").val(endDate);
+			$(document).find(".updateView").find(".caseDescript").val(caseDescript);
+			$(".searchConditionArea").css("display", "none");
+			$(".resultArea").css("display", "none");
+			$(".updateView").css("display", "block");
+		});
+	
+		//保存資料
+		$(document).on("click", ".btn_saveData", function(){
+			let caseId = $(this).closest("table").find(".caseId").val();
+			let controlLevel = $(this).closest("table").find(".controlLevel").find("option:selected").html();
+			let caseType = $(this).closest("table").find(".caseType").find("option:selected").html();
+			let empManagementUnit = $(this).closest("table").find(".empManagementUnit").find("option:selected").html();
+			let empOrganizer = $(this).closest("table").find(".empOrganizer").find("option:selected").html();
+			let startDate = $(this).closest("table").find(".startDate").val();
+			let endDate = $(this).closest("table").find(".endDate").val();
+			let caseDescript = $(this).closest("table").find(".caseDescript").val();
+			alert(caseId + controlLevel	+ caseType + empManagementUnit + empOrganizer + startDate + endDate + caseDescript);
+		});
+	
+		//回到上一個畫面
+		$(document).on("click", ".btn_goBack", function(){
+			$(".insertView").css("display", "none");
+			$(".updateView").css("display", "none");
+			$(".searchConditionArea").css("display", "block");
+			$(".resultArea").css("display", "block");
+		});
+	
+		//初始化開始日期插件
+		flatpickr(".startDate",{
+			altInput: false,
+			altFormat: "F j, Y",
+			dateFormat: "Y-m-d",
+			minDate: "today"
+		});
+	
+		//初始化結束日期插件
+		flatpickr(".endDate",{
+			altInput: false,
+			altFormat: "F j, Y",
+			dateFormat: "Y-m-d",
+			minDate: "today"
+		});
+		 $(".btn_sendAjax").on("click", function(){
+	         let testAjaxData = {caseNo:"20191108001",workItemDesc:"吃漢堡"};
+	         console.log(testAjaxData);
+	         let dataJson = JSON.stringify(testAjaxData);
+	         console.log(dataJson);
+	         $.ajax({
+	             url: "http://localhost:8081/webApp/index/jsonSearch",     // 資料請求的網址
+	             type: "POST",                  // GET | POST | PUT | DELETE | PATCH
+	             data: dataJson,                  // 傳送資料到指定的 url
+ 	             dataType: "json",             // 預期會接收到回傳資料的格式： json | xml | html
+	             timeout: 0,                   // request 可等待的毫秒數 | 0 代表不設定 timeout
+	             contentType : "application/json;charset=utf-8",
+	             beforeSend: function(){       // 在 request 發送之前執行
+	             },
+	             success: function(data){      // request 成功取得回應後執行
+	                     console.log(data);
+	             },
+	             error: function(data){
+	            	 console.log(data);
+	             }
+	         });
+	     });
+	</script>
 </body>
 </html>

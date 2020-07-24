@@ -10,10 +10,12 @@ import org.springframework.stereotype.Repository;
 import com.webcomm.oa.domain.Employee;
 
 @Repository
-public interface EmpRepository extends JpaRepository<Employee, Long>{	
-	Employee findByEmpId(@Param("empId") String empId);
+public interface EmpRepository extends JpaRepository<Employee, String>{	
+//	Employee findByEmpId(@Param("empId") String empId);
 	
 	@Query(value = "select e from Employee e where e.name =?1")
 	Employee findByEmpName(String name);
+	
+	Employee findByEmpId(String empId);
 	
 }

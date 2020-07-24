@@ -27,6 +27,11 @@ public enum EnumTest {
 	
 		return null;
 	}
-	
+//	public static void main(String[] args) {
+//		EnumTest[]allEnum = EnumTest.values();
+//		for(EnumTest enumtest : allEnum) {
+//			System.out.println(enumtest.getDay());
+//		}
+//	}
 }
 	
